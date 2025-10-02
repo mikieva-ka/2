@@ -1,0 +1,126 @@
+body{
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapper{
+    background: white;
+    width: 1000px;
+    height: 90%;
+    border: 1px solid black;
+    border-radius: 26px;
+    display: grid;
+    grid-template-columns: 370px 1fr;
+}
+
+.menu{
+    background: #FCFBFC;
+    border-right: 1px solid #F0F0F0;
+    border-top-left-radius: 26px;
+    border-bottom-left-radius: 26px;
+}
+
+.menu__title{
+    text-align: center;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.menu__button{
+    background: #ffccff;
+    border-radius: 10px;
+    color: #74777B;
+    font-size: 20px;
+    padding: 10px;
+    border: none;
+    width: 80%;
+    margin-left: 35px;
+}
+
+.menu__teg{
+    margin-top: 50px;
+    margin-left: 30px;
+    color: #74777B;
+    font-size: 30px;
+}
+
+.vse,
+.idea,
+.lich,
+.spis{
+    font-size: 25px;
+    font-weight: 500;
+    color: black;
+    margin: 15px 0 0 30px;
+}
+
+.rab{
+    background: #F4F4F4;
+    border-radius: 10px;
+    font-size: 25px;
+    font-weight: 500;
+    color: black;
+    margin-left: 20px ;
+    margin-top: 15px;
+    margin-right: 40px;
+    padding: 10px;
+}
+
+.poisk__input{
+    background: #FCFCFD;
+    border-radius: 5px;
+    border: 1px solid gray;
+    width: 80%;
+    margin-top: 25px;
+    margin-left: 20px;
+    padding: 10px;
+}
+
+.poisk{
+    display: flex;
+    gap: 10px;
+}
+
+.poisk__znach{
+    background: #ffccff;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 5px ;
+    color: #F0F0F0;
+    border: 1px solid gray;
+}
+
+.zadacha1{
+    border: 1px solid #E3E2E5;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.zadacha1__vnut{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.zad1{
+    font-size: 30px;
+}
+
+.zad2{
+    background: #F4F4F4;
+    width: 15%;
+    border-radius: 10px;
+    text-align: center;
+    padding: 5px;
+    color: #495B6D;
+}
+
+.zad3{
+    color: #495B6D;
+}
