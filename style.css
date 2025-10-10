@@ -47,26 +47,24 @@ body{
     font-size: 30px;
 }
 
-.vse,
-.idea,
-.lich,
-.spis{
-    font-size: 25px;
-    font-weight: 500;
-    color: black;
-    margin: 15px 0 0 30px;
+.teg {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    border-bottom: 1px solid #f1f2f6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding-bottom: 10px;
+    color: #2d3436;
+    font-size: 18px;
+    border-bottom: none;
 }
-
-.rab{
-    background: #F4F4F4;
-    border-radius: 10px;
-    font-size: 25px;
-    font-weight: 500;
-    color: black;
-    margin-left: 20px ;
-    margin-top: 15px;
-    margin-right: 40px;
-    padding: 10px;
+.teg:hover {
+    background-color: #afafaf;
+    border-radius: 30px;
+    width: 70%;
+    padding-left: 35px;
+    font-weight: 600;
 }
 
 .poisk__input{
@@ -93,19 +91,26 @@ body{
     border: 1px solid gray;
 }
 
-.zadacha1{
-    border: 1px solid #E3E2E5;
-    border-radius: 5px;
-    padding: 20px;
+.zadacha{
+    
+   
     margin-top: 30px;
     margin-left: 20px;
     margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow-y: auto;
 }
 
 .zadacha1__vnut{
-    display: flex;
-    justify-content: space-between;
+    padding: 20px;
+    border: 1px solid #E3E2E5;
+    border-radius: 5px;
     margin-bottom: 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    position: relative;
 }
 
 .zad1{
@@ -114,13 +119,17 @@ body{
 
 .zad2{
     background: #F4F4F4;
-    width: 15%;
+    width: fit-content;
     border-radius: 10px;
     text-align: center;
     padding: 5px;
     color: #495B6D;
+    position: absolute;
+    right: 10px;
+    top: 10px;
 }
 
 .zad3{
     color: #495B6D;
+    margin-top: 20px;
 }
