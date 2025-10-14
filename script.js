@@ -12,50 +12,28 @@ const oknoSavebtn = document.getElementById('okno-save')
 
 let activeTag = 1
 let editingItem = null
-let maxId = null
+let maxId = 0
 
 const tags = [
-    {
-        id: 1,
-        title: 'Все'
-    },
-    {
-        id: 2,
-        title: 'Идеи'
-    },
-    {
-        id: 3,
-        title: 'Личное'
-    },
-    {
-        id: 4,
-        title: 'Работа'
-    },
-    {
-        id: 5,
-        title: 'Список покупок'
-    }]
-const notes = initDate()
-const notes = [
-    {
-        id: 1,
-        title: 'Сдать отчет',
-        tag: 4,
-        updateAt: new Date().toDateString()
-    },
-    {
-        id: 2,
-        title: 'Купить продукты',
-        tag: 5,
-        updateAt: new Date().toDateString()
-    },
-    {
-        id: 3,
-        title: 'Заметка',
-        tag: 2,
-        updateAt: new Date().toDateString()
+    { id: 1,title: 'Все'},
+    { id: 2,title: 'Идеи'},
+    { id: 3,title: 'Личное'},
+    { id: 4,title: 'Работа'},
+    { id: 5,title: 'Список покупок'}]
+
+function initDate(){
+    const rawData = localStorage.getItem('data')
+    if (rawData===null){
+        return[
+    { id: 1,title: 'Сдать отчет',tag: 4,updateAt: new Date().toDateString()},
+    { id: 2,title: 'Купить продукты',tag: 5,updateAt: new Date().toDateString()},
+    {id: 3,title: 'Заметка',tag: 2,updateAt: new Date().toDateString()}
+        ]
     }
-]
+    return JSON.parse(rawData)
+}
+const notes = initDate()
+
 poisk.addEventListener('keydown', function(event){ //поиск по нажатию enter
     if (event.key === 'Enter' || event.keyCode === 13){
     event.preventDefault(); //предотвращаем стандартное действие enter
@@ -92,11 +70,10 @@ function createNote(note){
     return element
 }
 
-function getNotes(searchValue){
-    const filteredNotes = notes.filter((i) => {
-        return i.title.startsWith(searchValue)
-    })
-    return filteredNotes
+function getNotes(searchValue) {
+    return notes.filter(note => 
+        note.title.toLowerCase().startsWith(searchValue.toLowerCase())
+    );
 }
 
 function renderMenu(){
@@ -114,102 +91,115 @@ function render(){
     zadacha.innerHTML=''
     let filtered = getNotes(poisk.value)
 
-    //let filtered = notes
+    
     if (activeTag !== 1){
-        filtered=filtered.filter(i => i.tag === activeTag)
+        filtered=filtered.filter(note => note.tag === activeTag)
     }
-    if(filtered.length === 0){
+    if (filtered.length === 0){
         zadacha.innerText = 'Ничего не найдено'
         return
     }
-    for (let i of filtered){
-        const element = createNote(i)
+    for (let note of filtered){
+        const element = createNote(note)
         zadacha.appendChild(element)
     }
 }
 
 function onDelete(id){
-    const idx = notes.findIndex(i => i.id === id)
-    notes.splice(idx,1)
-    closeModal1()
-    render()
+    const idx = notes.findIndex(note => note.id === id)
+    if (idx !== -1){
+        notes.splice(idx,1)
+        saveToLocal()
+        render()
+    }
+    closeModal()
 }
 
 function openModal(){
     overlay.classList.add("overlay_open")
-    modalTitle.value= editingItem.title
+    oknoSelect.innerHTML = ''
     for (let tag of tags){
+        if (tag.id === 1) continue
         const option = document.createElement('option')
         option.value= tag.id
         option.innerText= tag.title
         oknoSelect.appendChild(option)
     }
-    if (editingItem.id){
-        btnDel = document.createElement('button')
-        btnDel.classList.add('okno__btn-save')
+    if ( editingItem && editingItem.id){
+        oknoInput.value = editingItem.title || ''
+        oknoSelect.value = editingItem.tag || tags[1].id;
+        const oldDelBtn = document.getElementById('delete-btn')
+        if (oldDelBtn) oldDelBtn.remove()
+        
+        btnDel.id = 'delete-btn';
+        btnDel.classList.add('okno__btn-delete')
         btnDel.style.background = 'red'
         btnDel.innerText = 'Удалить'
         btnDel.addEventListener('click', (e) => {
             e.preventDefault()
             onDelete(editingItem.id)
         })
-        modalForm.appendChild(btnDel)
+        oknoForm.appendChild(btnDel)
+    } else {
+        oknoInput.value = ''
+        oknoSelect.value = tags[1].id
+        const delBtn = document.getElementById('delete-btn')
+        if (delBtn) delBtn.remove()
     }
-    //TODD select form
 }
 
 function closeModal(){
-    overlay.classList.toggle("overlay_open")
-    oknoSelect.innerHTML=""
+    overlay.classList.remove("overlay_open")
     editingItem= null
-    btnDel.remove()
-    //TODD clear form
+    const delBtn = document.getElementById('delete-btn')
+    if (delBtn) delBtn.remove()
 }
 
 function getMaxId(){
     let max = 0
-    for (let i of notes){
-        if (i.id>max){
-            max= i.id
+    for (let note of notes){
+        if (note.id>max){
+            max= note.id
         }
     }
     return max
-}
-
-function initDate(){
-    const rawData = localStorage.getItem('data')
-    if (rawData === null){
-        return []
-    }
-    return JSON.parse(rawData)
 }
 
 function saveToLocal(){
     localStorage.setItem('data',JSON.stringify(notes))
 }
 
-function onSave(){
+function onSave(e){
+    e.preventDefault()
     if (!editingItem){
         closeModal()
         return
     }
-    //if new element
+    const title = oknoInput.value.trim();
+    if (!title) {
+        alert('Заголовок не может быть пустым!');
+        return;
+    }
+
     if(!editingItem.id){
-        notes.unshift({
+        const newNote = {
             id: ++maxId,
-            title: oknoInput.value,
+            title: title
             tag: +oknoSelect.value,
-            updateAt: editingItem.updateAt
-        })
-        //render()
-        //editingItem=null
-        //closeModal()
+            updateAt: new Date().toDateString()
+        }
+        notes.unshift(newNote)
+    } else{
+        const item = notes.find(note => note.id === editingItem.id)
+        if (item){
+            item.title = title
+            item.tag = oknoSelect.value
+            item.updateAt = new Date().toDateString()
+        }
     }
-    if (editingItem.id){
-        const item = notes.find(i => i.id === editingItem.id)
-        item.title = oknoInput.value// не дописала
-        item.tag = oknoSelect.value
-    }
+    saveToLocal()
+    render()
+    closeModal()
 }
 
 function init(){
@@ -220,19 +210,14 @@ function init(){
     btnNote.addEventListener('click',() =>{
         editingItem={
             id: null,
-            title: null,
-            tag: null,
+            title: '',
+            tag: tags[1].id,
             updateAt: new Date().toDateString()
         }
         openModal()
     })
-    btnNoteClose.addEventListener('click', () =>{
-        closeModal()
-    })
-    oknoSavebtn.addEventListener('click',(e) =>{
-        e.preventDefault()
-        onSave()
-    })
+   btnNoteClose.addEventListener('click', closeModal);
+    oknoSavebtn.addEventListener('click', onSave)
 }
 
 init()
