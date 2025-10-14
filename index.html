@@ -24,7 +24,7 @@
         </div>
         <div class="content">
             <div class="poisk">
-                <input type="text" class="poisk__input" placeholder="Поиск">
+                <input id="poisk" type="text" class="poisk__input" placeholder="Поиск">
                 <button id="poisk__znach-btn" class="poisk__znach"></button>
             </div>
             <div id="zadacha" class="zadacha">
@@ -46,3 +46,20 @@
             </div>
         </div>
     </div>
+
+    <div class="overlay" id="overlay">
+        <div class="okno">
+            <button class="okno__close" id="okno__close">x</button>
+            <form class="okno__form" id="okno-form">
+                <input type="text" id="okno__input" placeholder="Заголовок">
+                <select name="select" id="okno__select">
+                    <option value="value1">Значение 1</option>
+                    <option value="value2">Значение 2</option>
+                    <option value="value3">Значение 3</option>
+                </select>
+                <button class="okno__btn-save" id="okno-save">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
