@@ -9,6 +9,7 @@ const oknoForm = document.getElementById('okno-form')
 const oknoInput = document.getElementById('okno__input')
 const oknoSelect = document.getElementById('okno__select')
 const oknoSavebtn = document.getElementById('okno-save')
+const btnDel = document.createElement('button');
 
 let activeTag = 1
 let editingItem = null
@@ -24,11 +25,13 @@ const tags = [
 function initDate(){
     const rawData = localStorage.getItem('data')
     if (rawData===null){
-        return[
-    { id: 1,title: 'Сдать отчет',tag: 4,updateAt: new Date().toDateString()},
-    { id: 2,title: 'Купить продукты',tag: 5,updateAt: new Date().toDateString()},
-    {id: 3,title: 'Заметка',tag: 2,updateAt: new Date().toDateString()}
+        const defaultNotes = [
+            { id: 1,title: 'Сдать отчет',tag: 4,updateAt: new Date().toDateString()},
+            { id: 2,title: 'Купить продукты',tag: 5,updateAt: new Date().toDateString()},
+            {id: 3,title: 'Заметка',tag: 2,updateAt: new Date().toDateString()}
         ]
+        localStorage.setItem('data', JSON.stringify(defaultNotes))
+        return defaultNotes
     }
     return JSON.parse(rawData)
 }
@@ -171,10 +174,6 @@ function saveToLocal(){
 
 function onSave(e){
     e.preventDefault()
-    if (!editingItem){
-        closeModal()
-        return
-    }
     const title = oknoInput.value.trim();
     if (!title) {
         alert('Заголовок не может быть пустым!');
@@ -184,7 +183,7 @@ function onSave(e){
     if(!editingItem.id){
         const newNote = {
             id: ++maxId,
-            title: title
+            title: title,
             tag: +oknoSelect.value,
             updateAt: new Date().toDateString()
         }
@@ -203,7 +202,7 @@ function onSave(e){
 }
 
 function init(){
-    maxId=getMaxId
+    maxId=getMaxId()
     renderMenu()
     render()
     btnPoisk.addEventListener('click',render)
