@@ -63,11 +63,19 @@ const createNote = (note) => {
   
   const tagTitle = tags.find(t => t.id === note.tag)?.title || '—';
   
-  div.innerHTML = `
-    <span class="zad1">${note.title}</span>
-    <span class="zad2">${tagTitle}</span>
-    <span class="zad3">${note.updateAt}</span>
-  `;
+  const titleEl = document.createElement('span');
+  titleEl.className = 'zad1';
+  titleEl.textContent = note.title;
+
+  const tagEl = document.createElement('span');
+  tagEl.className = 'zad2';
+  tagEl.textContent = tagTitle;
+
+  const dateEl = document.createElement('span');
+  dateEl.className = 'zad3';
+  dateEl.textContent = note.updateAt;
+
+  div.append(titleEl, tagEl, dateEl);
   return div;
 };
 
@@ -83,9 +91,17 @@ function getFilteredNotes() {
 // === Рендеринг ===
 function render() {
   const filtered = getFilteredNotes();
-  zadacha.innerHTML = filtered.length
-    ? filtered.map(createNote).join('')
-    : '<p>Ничего не найдено</p>';
+  
+  zadacha.innerHTML = ''; // Очищаем контейнер
+
+  if (filtered.length === 0) {
+    zadacha.innerHTML = '<p>Ничего не найдено</p>';
+    return;
+  }
+
+  filtered.forEach(note => {
+    zadacha.appendChild(createNote(note));
+  });
 }
 
 // === Модальное окно ===
@@ -93,19 +109,25 @@ function openModal(note = null) {
   editingId = note?.id || null;
   
   // Заполняем select
-  oknoSelect.innerHTML = tags
+  oknoSelect.innerHTML = '';
+  tags
     .filter(t => t.id !== 1)
-    .map(t => `<option value="${t.id}">${t.title}</option>`)
-    .join('');
+    .forEach(tag => {
+      const option = document.createElement('option');
+      option.value = tag.id;
+      option.textContent = tag.title;
+      oknoSelect.appendChild(option);
+    });
 
   // Заполняем поля
   oknoInput.value = note?.title || '';
   if (note) oknoSelect.value = note.tag;
 
-  // Управление кнопкой "Удалить"
+  // Удаляем старую кнопку удаления
   const delBtn = document.getElementById('delete-btn');
   if (delBtn) delBtn.remove();
 
+  // Добавляем кнопку "Удалить" только при редактировании
   if (note) {
     const btn = document.createElement('button');
     btn.id = 'delete-btn';
@@ -127,6 +149,8 @@ function openModal(note = null) {
 function closeModal() {
   overlay.classList.remove('overlay_open');
   editingId = null;
+  const delBtn = document.getElementById('delete-btn');
+  if (delBtn) delBtn.remove();
 }
 
 // === Сохранение ===
@@ -143,8 +167,9 @@ function onSave(e) {
       note.updateAt = new Date().toDateString();
     }
   } else {
+    const newId = notes.length > 0 ? Math.max(...notes.map(n => n.id)) + 1 : 1;
     notes.unshift({
-      id: Math.max(0, ...notes.map(n => n.id)) + 1,
+      id: newId,
       title,
       tag: +oknoSelect.value,
       updateAt: new Date().toDateString()
