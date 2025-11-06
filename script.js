@@ -76,6 +76,9 @@ const createNote = (note) => {
   dateEl.textContent = note.updateAt;
 
   div.append(titleEl, tagEl, dateEl);
+  div.addEventListener('click', () => {
+    openModal(note);
+  });
   return div;
 };
 
@@ -196,3 +199,4 @@ function init() {
 }
 
 init();
+
